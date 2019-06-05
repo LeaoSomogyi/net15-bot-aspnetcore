@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
+﻿
 namespace SimpleBotCore.Logic
 {
     public class SimpleBotUser
@@ -11,6 +7,5 @@ namespace SimpleBotCore.Logic
         {
             return $"{message.User} disse '{message.Text}'";
         }
-
     }
 }
