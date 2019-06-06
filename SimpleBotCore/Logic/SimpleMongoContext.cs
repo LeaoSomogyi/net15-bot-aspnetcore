@@ -1,22 +1,29 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Bson;
+using Microsoft.Extensions.Configuration;
 
 namespace SimpleBotCore.Logic
 {
-    public class SimpleMongoContext
+    public class SimpleMongoContext<T>
     {
         private MongoClient MongoClient;
         private IMongoDatabase MongoDatabase;
-        private IMongoCollection<SimpleMessage> MongoCollection;
+        private IMongoCollection<T> MongoCollection;
 
-        public SimpleMongoContext(string database, string collection)
+        public SimpleMongoContext()
         {
-            MongoClient = new MongoClient();
+            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+            var config = builder.Build();
+            var conn = config["MongoDBConnectionString"];
+            var database = config["MongoDBDatabase"];
+            var collection = config["MongoDBCollection"];
+
+            MongoClient = new MongoClient(conn);
             MongoDatabase = MongoClient.GetDatabase(database);
-            MongoCollection = MongoDatabase.GetCollection<SimpleMessage>(collection);
+            MongoCollection = MongoDatabase.GetCollection<T>(collection);
         }
 
-        public void Insert(SimpleMessage document)
+        public void Insert(T document)
         {
             MongoCollection.InsertOne(document);
         }

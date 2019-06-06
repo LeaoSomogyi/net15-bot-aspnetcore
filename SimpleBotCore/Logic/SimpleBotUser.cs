@@ -4,17 +4,22 @@ namespace SimpleBotCore.Logic
 {
     public class SimpleBotUser
     {
+        SimpleMongoContext<SimpleMessage> _context = null;
+
+        public SimpleBotUser()
+        {
+            _context = new SimpleMongoContext<SimpleMessage>();
+        }
+
         public string Reply(SimpleMessage message)
         {
-            var context = new SimpleMongoContext("FiapRobot", "messages");
+            _context.Insert(message);
 
-            context.Insert(message);
+            var filter = new BsonDocument() { { "Id", message.Id } };
 
-            var filtro = new BsonDocument() { { "Id", message.Id } };
+            var count = _context.CountMessages(filter);
 
-            var count = context.CountMessages(filtro);
-
-            var _message = $"{message.User} disse '{message.Text}'({count} mensagens enviadas)";
+            var _message = $"{message.User} disse '{message.Text}' ({count} mensagen(s) enviada(s))";
 
             return _message;
         }
