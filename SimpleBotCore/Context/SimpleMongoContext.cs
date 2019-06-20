@@ -22,8 +22,10 @@ namespace SimpleBotCore.Context
             MongoCollection.InsertOne(document);
         }
 
-        public int CountMessages(BsonDocument filter)
+        public int CountMessages(string id)
         {
+            var filter = new BsonDocument() { { "Id", id } };
+
             return MongoCollection.Find(filter).ToList().Count;
         }
     }

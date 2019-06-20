@@ -1,11 +1,7 @@
-﻿using MongoDB.Bson;
-
-namespace SimpleBotCore.Contracts
+﻿namespace SimpleBotCore.Contracts
 {
-    public interface ISimpleMongoContext<T>
+    public interface ISimpleMongoContext<T> : ISimpleDatabaseContext<T>
     {
-        void Insert(T document);
 
-        int CountMessages(BsonDocument filter);
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleBotCore.Context;
 using SimpleBotCore.Contracts;
 using SimpleBotCore.Logic;
+using SimpleBotCore.Repositories;
 
 namespace SimpleBotCore
 {
@@ -20,12 +21,36 @@ namespace SimpleBotCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            MongoConnectionSettings settings = new MongoConnectionSettings();
-            Configuration.Bind("MongoConnectionSettings", settings);
+            #region "  MongoDB Connection Settings and Singletons  "
 
-            SimpleMongoContext<SimpleMessage> dataContext = new SimpleMongoContext<SimpleMessage>(settings);
+            //MongoConnectionSettings settings = new MongoConnectionSettings();
+            //Configuration.Bind("MongoConnectionSettings", settings);
 
-            services.AddSingleton<ISimpleMongoContext<SimpleMessage>>(dataContext);
+            //SimpleMongoContext<SimpleMessage> dataContext = new SimpleMongoContext<SimpleMessage>(settings);
+
+            //services.AddSingleton<ISimpleMongoContext<SimpleMessage>>(dataContext);
+
+            #endregion
+
+            #region "  SQL Server Connection Settings and Singletons  "
+
+            SQLServerConnectionSettings settings = new SQLServerConnectionSettings();
+            Configuration.Bind("SQLServerConnectionSettings", settings);
+
+            ISimpleMessageRepository repo = new SimpleMessageRepository(settings);
+            ISimpleSQLServerContext<SimpleMessage> dataContext = new SimpleSQLServerContext<SimpleMessage>(repo);
+
+            services.AddSingleton(repo);
+            services.AddSingleton(dataContext);
+
+            #endregion
+
+            #region "  ElasticSearch Connection Settings and Singletons  "
+
+            //TO BE IMPLEMENTED
+
+            #endregion
+
             services.AddSingleton(new SimpleBotUser(dataContext));
             services.AddMvc();
         }
