@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using SimpleBotCore.Logic;
+using System;
+using System.Threading.Tasks;
 
 namespace SimpleBotCore.Controllers
 {
     [Route("api/[controller]")]
     public class MessagesController : Controller
     {
-        SimpleBotUser _bot = new SimpleBotUser();
+        private readonly SimpleBotUser _bot;
 
         public MessagesController(SimpleBotUser bot)
         {
-            this._bot = bot;
+            _bot = bot;
         }
 
         [HttpGet]
@@ -45,7 +43,7 @@ namespace SimpleBotCore.Controllers
             string userFromId = activity.From.Id;
             string userFromName = activity.From.Name;
 
-            var message = new SimpleMessage(userFromId, userFromName, text);
+            SimpleMessage message = new SimpleMessage(userFromId, userFromName, text);
 
             string response = _bot.Reply(message);
 
@@ -55,8 +53,8 @@ namespace SimpleBotCore.Controllers
         // Responde mensagens usando o Bot Framework Connector
         async Task ReplyUserAsync(Activity message, string text)
         {
-            var connector = new ConnectorClient(new Uri(message.ServiceUrl));
-            var reply = message.CreateReply(text);
+            ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+            Activity reply = message.CreateReply(text);
 
             await connector.Conversations.ReplyToActivityAsync(reply);
         }

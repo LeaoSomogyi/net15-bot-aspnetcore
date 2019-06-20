@@ -1,25 +1,26 @@
 ﻿using MongoDB.Bson;
+using SimpleBotCore.Contracts;
 
 namespace SimpleBotCore.Logic
 {
     public class SimpleBotUser
     {
-        SimpleMongoContext<SimpleMessage> _context = null;
+        private readonly ISimpleMongoContext<SimpleMessage> _context;
 
-        public SimpleBotUser()
+        public SimpleBotUser(ISimpleMongoContext<SimpleMessage> context)
         {
-            _context = new SimpleMongoContext<SimpleMessage>();
+            _context = context;
         }
 
         public string Reply(SimpleMessage message)
         {
             _context.Insert(message);
 
-            var filter = new BsonDocument() { { "Id", message.Id } };
+            BsonDocument filter = new BsonDocument() { { "Id", message.Id } };
 
-            var count = _context.CountMessages(filter);
+            int count = _context.CountMessages(filter);
 
-            var _message = $"{message.User} disse '{message.Text}' ({count} mensagen(s) enviada(s))";
+            string _message = $"{message.User} disse '{message.Text}' ({count} mensagen(s) enviada(s))";
 
             return _message;
         }
