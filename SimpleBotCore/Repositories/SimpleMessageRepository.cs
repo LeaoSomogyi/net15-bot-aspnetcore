@@ -17,7 +17,23 @@ namespace SimpleBotCore.Repositories
 
         public int CountMessages(string id)
         {
-            throw new NotImplementedException();
+            SqlConnection connection = new SqlConnection(_settings.ConnectionString);
+            try
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("select count(*) from TBMessage where id = '" + id + "'"  , connection);
+                Int32 count = (Int32)command.ExecuteScalar();
+                return count;
+            }
+            catch(Exception ex)
+            {
+                Console.Write(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return 0;
         }
 
         public void Insert<T>(T entity) where T : SimpleMessage
