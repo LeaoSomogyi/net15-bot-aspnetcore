@@ -21,13 +21,14 @@ namespace SimpleBotCore.Repositories
             try
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand("select count(*) from TBMessage where id = '" + id + "'"  , connection);
-                Int32 count = (Int32)command.ExecuteScalar();
+                SqlCommand command = new SqlCommand("select count(*) from TBMessage where id = @id", connection);
+                command.Parameters.AddWithValue("@id", id);
+                int count = (int)command.ExecuteScalar();
                 return count;
             }
-            catch(Exception ex)
+            catch
             {
-                Console.Write(ex.Message);
+                throw;
             }
             finally
             {
@@ -38,7 +39,7 @@ namespace SimpleBotCore.Repositories
 
         public void Insert<T>(T entity) where T : SimpleMessage
         {
-            var message = entity as SimpleMessage;
+            SimpleMessage message = entity as SimpleMessage;
 
             SqlConnection connection = new SqlConnection(_settings.ConnectionString);
 
@@ -46,7 +47,7 @@ namespace SimpleBotCore.Repositories
             {
                 connection.Open();
 
-                var command = "INSERT INTO TBMessage VALUES (@Id, @User, @Text)";
+                string command = "INSERT INTO TBMessage VALUES (@Id, @User, @Text)";
 
                 SqlCommand sqlCommand = new SqlCommand(command, connection);
                 sqlCommand.Parameters.AddWithValue("@Id", message.Id);

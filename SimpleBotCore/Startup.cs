@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleBotCore.Context;
 using SimpleBotCore.Contracts;
 using SimpleBotCore.Logic;
-using SimpleBotCore.Repositories;
 
 namespace SimpleBotCore
 {
@@ -34,20 +33,25 @@ namespace SimpleBotCore
 
             #region "  SQL Server Connection Settings and Singletons  "
 
-            SQLServerConnectionSettings settings = new SQLServerConnectionSettings();
-            Configuration.Bind("SQLServerConnectionSettings", settings);
+            //SQLServerConnectionSettings settings = new SQLServerConnectionSettings();
+            //Configuration.Bind("SQLServerConnectionSettings", settings);
 
-            ISimpleMessageRepository repo = new SimpleMessageRepository(settings);
-            ISimpleSQLServerContext<SimpleMessage> dataContext = new SimpleSQLServerContext<SimpleMessage>(repo);
+            //ISimpleMessageRepository repo = new SimpleMessageRepository(settings);
+            //ISimpleSQLServerContext<SimpleMessage> dataContext = new SimpleSQLServerContext<SimpleMessage>(repo);
 
-            services.AddSingleton(repo);
-            services.AddSingleton(dataContext);
+            //services.AddSingleton(repo);
+            //services.AddSingleton(dataContext);
 
             #endregion
 
             #region "  ElasticSearch Connection Settings and Singletons  "
 
-            //TO BE IMPLEMENTED
+            ElasticSearchConnectionSettings settings = new ElasticSearchConnectionSettings();
+            Configuration.Bind("ElasticSearchConnectionSettings", settings);
+
+            ISimpleElasticSearchContext<SimpleMessage> dataContext = new SimpleElasticSearchContext(settings);
+
+            services.AddSingleton(dataContext);
 
             #endregion
 
